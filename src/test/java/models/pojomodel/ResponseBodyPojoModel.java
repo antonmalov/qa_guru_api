@@ -1,6 +1,6 @@
-package models;
+package models.pojomodel;
 
-public class ResponseBodyModel {
+public class ResponseBodyPojoModel {
     private String token;
 
     public String getToken() {

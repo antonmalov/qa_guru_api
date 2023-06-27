@@ -1,6 +1,6 @@
-package models;
+package models.pojomodel;
 
-public class LoginBodyModel {
+public class LoginBodyPojoModel {
     private String email, password;
 
     public String getEmail() {

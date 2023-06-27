@@ -1,7 +1,7 @@
 package tests;
 
-import models.LoginBodyModel;
-import models.ResponseBodyModel;
+import models.pojomodel.LoginBodyPojoModel;
+import models.pojomodel.ResponseBodyPojoModel;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -29,11 +29,11 @@ public class ReqresInTests {
 
     @Test
     void loginWithPojoModelTest() {
-        LoginBodyModel loginBody = new LoginBodyModel();
+        LoginBodyPojoModel loginBody = new LoginBodyPojoModel();
         loginBody.setEmail("eve.holt@reqres.in");
         loginBody.setPassword("cityslicka");
 
-        ResponseBodyModel responseModel =
+        ResponseBodyPojoModel response =
         given()
                 .log().uri()
                 .contentType(JSON)
@@ -44,7 +44,28 @@ public class ReqresInTests {
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .extract().as(ResponseBodyModel.class);
-        assertThat(responseModel.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+                .extract().as(ResponseBodyPojoModel.class);
+        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+    }
+
+    @Test
+    void loginWithLombokModelTest() {
+        LoginBodyPojoModel loginBody = new LoginBodyPojoModel();
+        loginBody.setEmail("eve.holt@reqres.in");
+        loginBody.setPassword("cityslicka");
+
+        ResponseBodyPojoModel response =
+                given()
+                        .log().uri()
+                        .contentType(JSON)
+                        .body(loginBody)
+                        .when()
+                        .post("https://reqres.in/api/login")
+                        .then()
+                        .log().status()
+                        .log().body()
+                        .statusCode(200)
+                        .extract().as(ResponseBodyPojoModel.class);
+        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
     }
 }
