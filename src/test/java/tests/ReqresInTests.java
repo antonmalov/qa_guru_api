@@ -3,8 +3,10 @@ package tests;
 import io.qameta.allure.restassured.AllureRestAssured;
 import models.pojomodel.LoginBodyPojoModel;
 import models.pojomodel.ResponseBodyPojoModel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static helpers.CustomApiListener.withCustomTemplates;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.is;
@@ -71,7 +73,7 @@ public class ReqresInTests {
     }
 
     @Test
-    void loginWithAllureModelTest() {
+    void loginWithAllureTest() {
         LoginBodyPojoModel loginBody = new LoginBodyPojoModel();
         loginBody.setEmail("eve.holt@reqres.in");
         loginBody.setPassword("cityslicka");
@@ -80,6 +82,29 @@ public class ReqresInTests {
                 given()
                         .log().uri()
                         .filter(new AllureRestAssured())
+                        .contentType(JSON)
+                        .body(loginBody)
+                        .when()
+                        .post("https://reqres.in/api/login")
+                        .then()
+                        .log().status()
+                        .log().body()
+                        .statusCode(200)
+                        .extract().as(ResponseBodyPojoModel.class);
+        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+    }
+
+    @Test
+    @Disabled
+    void loginWithCustomListenerTest() {
+        LoginBodyPojoModel loginBody = new LoginBodyPojoModel();
+        loginBody.setEmail("eve.holt@reqres.in");
+        loginBody.setPassword("cityslicka");
+
+        ResponseBodyPojoModel response =
+                given()
+                        .log().uri()
+                        .filter(withCustomTemplates())
                         .contentType(JSON)
                         .body(loginBody)
                         .when()
